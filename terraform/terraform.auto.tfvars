@@ -1,0 +1,13 @@
+instances    = "2"
+vmtemp       = "CENTOS_TMPL"
+vmname       = "nginx"
+vmrp         = "VSANCLUSTER01/Resources"
+vlan         = "VM Network"
+dc           = "MYVWORLD"
+ds           = "vsanDatastore"
+ipaddress    = ["139.178.75.12", "139.178.75.13"]
+ipv4submask  = 28
+vmgateway    = "139.178.75.1"
+vmdns        = ["8.8.8.8", "8.8.4.4"]
+tag_category = "LOADBALANCER"
+tag          = "NGINX"
