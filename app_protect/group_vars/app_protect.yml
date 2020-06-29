@@ -1,0 +1,64 @@
+# Remove http website configuration files
+nginx_cleanup_config: true
+nginx_cleanup_config_path:
+  - directory:
+      - /etc/nginx/conf.d
+
+nginx_main_template_enable: true
+
+# Enable dynamic main configuration. This is required to use the demo website template
+nginx_http_template_enable: true
+nginx_http_template:
+  backends:
+    template_file: http/default.conf.j2
+    conf_file_name: upstreams.conf
+    conf_file_location: /etc/nginx/conf.d/
+    upstreams:
+      app_backend:
+        name: app_backend
+        zone_name: app_backend
+        zone_size: 64k
+        sticky_cookie: false
+        servers:
+          server1:
+            address: 10.123.2.110  
+            port: 80
+            weight: 1
+            health_check: max_fails=1 fail_timeout=10s
+          server2:
+            address: 10.123.2.111
+            port: 80
+            weight: 1
+            health_check: max_fails=1 fail_timeout=10s
+  app-demo:
+    template_file: http/default.conf.j2
+    conf_file_name: app-demo.conf
+    conf_file_location: /etc/nginx/conf.d/
+    servers:
+      app1:
+        listen:
+          listen:
+            port: 80
+        server_name: toto.app.com
+        reverse_proxy:
+          locations:
+            frontend:
+              location: /
+              proxy_pass: http://app_backend
+              proxy_set_header:
+                header_x_forwarded_for:
+                  name: X-Forwarded-For
+                  value: $remote_addr
+          health_check_plus: true
+
+## Instances access 
+ansible_password: "password"
+ansible_become_method: "sudo"
+ansible_become_password: "password"
+ansible_become: true
+
+## NGINX PLUS licensing
+nginx_type: plus
+nginx_license:
+  certificate: license/nginx-repo.crt
+  key: license/nginx-repo.key

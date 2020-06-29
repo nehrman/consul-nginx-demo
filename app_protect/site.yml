@@ -1,0 +1,7 @@
+---
+- hosts: app_protect
+  gather_facts: yes
+  roles:
+    - role: ansible-role-nginx
+      #environment:
+      #  APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE: 1
